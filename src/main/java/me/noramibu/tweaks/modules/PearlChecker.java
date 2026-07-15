@@ -174,7 +174,7 @@ public class PearlChecker extends Module {
             if (!NametagUtils.to2D(pos, scale.get())) continue;
 
             NametagUtils.begin(pos);
-            text.beginBig();
+            text.beginBig(event.graphics);
 
             double w = text.getWidth(label);
             double x = -w / 2;

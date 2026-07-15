@@ -58,10 +58,10 @@ public class CategoryManagerScreen extends WindowScreen {
             categoriesTable.add(theme.label(category.name)).expandX();
 
             WButton manageButton = categoriesTable.add(theme.button("Manage")).widget();
-            manageButton.action = () -> Minecraft.getInstance().setScreen(new ManageCategoryModulesScreen(theme, category));
+            manageButton.action = () -> Minecraft.getInstance().setScreenAndShow(new ManageCategoryModulesScreen(theme, category));
 
             WButton renameButton = categoriesTable.add(theme.button("Rename")).widget();
-            renameButton.action = () -> Minecraft.getInstance().setScreen(new RenameCategoryScreen(theme, category));
+            renameButton.action = () -> Minecraft.getInstance().setScreenAndShow(new RenameCategoryScreen(theme, category));
 
             WButton activateButton = categoriesTable.add(theme.button("Activate All")).widget();
             activateButton.action = () -> {

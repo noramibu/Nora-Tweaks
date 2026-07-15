@@ -28,7 +28,7 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class Seeds extends System<Seeds> {
     private static final Seeds INSTANCE = new Seeds();
-    private static final String DEFAULT_CUBIOMES_VERSION = "MC_26_1";
+    private static final String DEFAULT_CUBIOMES_VERSION = "MC_26_2";
 
     public final HashMap<String, Seed> seeds = new HashMap<>();
 
@@ -225,7 +225,7 @@ public class Seeds extends System<Seeds> {
         try {
             return (int) Cubiomes.class.getMethod(resolved).invoke(null);
         } catch (ReflectiveOperationException ignored) {
-            return Cubiomes.MC_26_1();
+            return Cubiomes.MC_26_2();
         }
     }
 

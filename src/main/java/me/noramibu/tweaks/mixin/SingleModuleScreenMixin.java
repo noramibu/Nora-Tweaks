@@ -27,7 +27,7 @@ public abstract class SingleModuleScreenMixin extends WidgetScreen {
         add(theme.horizontalSeparator()).expandX();
         WButton addToCategoryButton = add(theme.button("Add to Custom Category")).expandX().widget();
         addToCategoryButton.action = () -> {
-            Minecraft.getInstance().setScreen(new AddToCategoryScreen(theme, module));
+            Minecraft.getInstance().setScreenAndShow(new AddToCategoryScreen(theme, module));
         };
     }
 }

@@ -34,7 +34,7 @@ public class HotkeysScreen extends WindowScreen {
             edit.action = () -> {
                 EditHotkeyScreen screen = new EditHotkeyScreen(theme, module, hotkey);
                 screen.parent = this;
-                mc.setScreen(screen);
+                mc.setScreenAndShow(screen);
             };
             table.add(edit);
 

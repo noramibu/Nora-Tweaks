@@ -36,7 +36,7 @@ public class HotkeyUtility extends Module {
     @Override
     public WWidget getWidget(GuiTheme theme) {
         WButton button = theme.button("Configure Hotkeys");
-        button.action = () -> mc.setScreen(new HotkeysScreen(theme, this));
+        button.action = () -> mc.setScreenAndShow(new HotkeysScreen(theme, this));
         return button;
     }
 

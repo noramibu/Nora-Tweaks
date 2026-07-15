@@ -8,7 +8,7 @@ import meteordevelopment.meteorclient.systems.waypoints.Waypoints;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.contextualbar.LocatorBarRenderer;
+import net.minecraft.client.gui.contextualbar.LocatorBar;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.WaypointStyle;
@@ -31,7 +31,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(LocatorBarRenderer.class)
+@Mixin(LocatorBar.class)
 public abstract class LocatorBarMixin {
     @Shadow @Final private Minecraft minecraft;
 
@@ -74,7 +74,7 @@ public abstract class LocatorBarMixin {
     @Unique
     private void renderOverlays(GuiGraphicsExtractor context, int cx, int cy) {
         if (module.showDirections.get()) {
-            float yaw = Mth.wrapDegrees(minecraft.gameRenderer.getMainCamera().yRot());
+            float yaw = Mth.wrapDegrees(minecraft.gameRenderer.mainCamera().yRot());
             int centerX = cx + 91;
             drawDirection(context, "S", 0, yaw, centerX, cy);
             drawDirection(context, "W", 90, yaw, centerX, cy);
@@ -107,11 +107,11 @@ public abstract class LocatorBarMixin {
         if (!module.displayWaypoints.get()) return;
 
         //? if >=1.21.11 {
-        Vec3 cameraPos = minecraft.gameRenderer.getMainCamera().position();
+        Vec3 cameraPos = minecraft.gameRenderer.mainCamera().position();
         //?} else
         /*Vec3d cameraPos = client.gameRenderer.getCamera().getPos();
         */
-        float playerYaw = Mth.wrapDegrees(minecraft.gameRenderer.getMainCamera().yRot());
+        float playerYaw = Mth.wrapDegrees(minecraft.gameRenderer.mainCamera().yRot());
         boolean showData = (module.displayWaypointName.get() || module.displayWaypointDistance.get()) 
             && (!module.displayWaypointOnlyOnTab.get() || minecraft.options.keyPlayerList.isDown());
 
@@ -163,7 +163,7 @@ public abstract class LocatorBarMixin {
         minecraft.player.connection.getWaypointManager().forEachWaypoint(cameraEntity, waypoint -> {
             if (waypoint.id().left().map(uuid -> uuid.equals(cameraEntity.getUUID())).orElse(false)) return;
 
-            double angle = waypoint.yawAngleToCamera(level, minecraft.gameRenderer.getMainCamera(), partialTickSupplier);
+            double angle = waypoint.yawAngleToCamera(level, minecraft.gameRenderer.mainCamera(), partialTickSupplier);
             if (angle <= -60.0 || angle > 60.0) return;
 
             int dotPosition = Mth.floor(angle * 173.0 / 2.0 / 60.0);
@@ -179,7 +179,7 @@ public abstract class LocatorBarMixin {
         if (entry == null) return;
 
         double dist = Math.sqrt(waypoint.distanceSquared(minecraft.getCameraEntity()));
-        WaypointStyle style = minecraft.getWaypointStyles().get(waypoint.icon().style);
+        WaypointStyle style = minecraft.gui.hud.getWaypointStyles().get(waypoint.icon().style);
         float styleDistance =
             Double.isFinite(dist) ? (float) Math.min(dist, Float.MAX_VALUE) : Float.POSITIVE_INFINITY;
         float scale = Mth.lerp(getProgress(styleDistance, style.nearDistance(), style.farDistance()), 0.5f, 1.0f);

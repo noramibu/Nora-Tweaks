@@ -21,7 +21,7 @@ public class KeywordsScreen extends WindowScreen {
     public void initWidgets() {
         // Add button
         WButton addButton = add(theme.button("Add")).expandX().widget();
-        addButton.action = () -> minecraft.setScreen(new EditKeywordScreen(theme, null, keyword -> {
+        addButton.action = () -> minecraft.setScreenAndShow(new EditKeywordScreen(theme, null, keyword -> {
             if (!module.keywords.contains(keyword)) {
                 module.keywords.add(keyword);
             }
@@ -40,7 +40,7 @@ public class KeywordsScreen extends WindowScreen {
             table.add(theme.label(keyword.name));
 
             WButton editButton = table.add(theme.button("Edit")).widget();
-            editButton.action = () -> minecraft.setScreen(new EditKeywordScreen(theme, keyword, k -> refresh()));
+            editButton.action = () -> minecraft.setScreenAndShow(new EditKeywordScreen(theme, keyword, k -> refresh()));
 
             WButton deleteButton = table.add(theme.button("Remove")).widget();
             deleteButton.action = () -> {

@@ -129,7 +129,7 @@ public class ManageCategoryModulesScreen extends WindowScreen {
             // If the name changed, reopen the screen with the new title
             if (!this.getTitle().getString().equals("Manage Category - " + category.name)) {
                 this.onClose();
-                Minecraft.getInstance().setScreen(new ManageCategoryModulesScreen(theme, category));
+                Minecraft.getInstance().setScreenAndShow(new ManageCategoryModulesScreen(theme, category));
                 return;
             }
 

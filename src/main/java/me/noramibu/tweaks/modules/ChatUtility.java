@@ -86,7 +86,7 @@ public class ChatUtility extends Module {
         WTable table = theme.table();
 
         WButton button = table.add(theme.button("Keywords to notify")).expandX().widget();
-        button.action = () -> mc.setScreen(new KeywordsScreen(theme));
+        button.action = () -> mc.setScreenAndShow(new KeywordsScreen(theme));
         table.row();
 
         if (!keywords.isEmpty()) {

@@ -12,7 +12,7 @@ public class CategoryManagerModule extends Module {
 
     @Override
     public void onActivate() {
-        mc.setScreen(new CategoryManagerScreen(GuiThemes.get()));
+        mc.setScreenAndShow(new CategoryManagerScreen(GuiThemes.get()));
         toggle();
     }
 }
