@@ -13,6 +13,7 @@ import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
+import me.noramibu.tweaks.utils.ChunkPosUtil;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -75,7 +76,7 @@ public class DeepslateESP extends Module {
         int bx = event.pos.getX();
         int by = event.pos.getY();
         int bz = event.pos.getZ();
-        long key = ChunkPos.pack(bx >> 4, bz >> 4);
+        long key = ChunkPosUtil.pack(bx >> 4, bz >> 4);
 
         var oldState = event.oldState;
         var newState = event.newState;
@@ -105,7 +106,7 @@ public class DeepslateESP extends Module {
     private void scanChunk(LevelChunk chunk) {
         if (!isActive() || mc.level == null) return;
 
-        long key = chunk.getPos().pack();
+        long key = ChunkPosUtil.pack(chunk.getPos());
         Map<BlockPos, Boolean> map = new ConcurrentHashMap<>();
 
         int startX = chunk.getPos().getMinBlockX();

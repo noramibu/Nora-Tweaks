@@ -28,6 +28,9 @@ public class NoraTweaksMixinPlugin implements IMixinConfigPlugin {
         if (mixinClassName.contains(".catppuccin.")) {
             return CATPPUCCIN_LOADED;
         }
+        if (mixinClassName.contains(".baritone.")) {
+            return false;
+        }
         return true;
     }
 

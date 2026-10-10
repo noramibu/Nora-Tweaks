@@ -1,4 +1,3 @@
-//? if >=1.21.7 {
 /*
  * Implemented from Meteor Client PR #5928
  * https://github.com/MeteorDevelopment/meteor-client/pull/5928
@@ -113,4 +112,3 @@ public class BetterLocator extends Module {
         super(NoraTweaks.CATEGORY, "better-locator", "Enhances the vanilla Locator Bar HUD with additional features.");
     }
 }
-//?}

@@ -5,14 +5,18 @@
   "name": "Nora Tweaks",
   "description": "A tweaks mod for Meteor Client.",
   "authors": [
-    "noramibu"
+    "noramibu",
+    "Fractal42O"
   ],
   "contact": {
-    "sources": "https://github.com/MeteorDevelopment/meteor-addon-template"
+    "sources": "https://github.com/noramibu/Nora-Tweaks"
   },
   "icon": "assets/nora-tweaks/icon.png",
   "environment": "client",
   "entrypoints": {
+    "mixinsquared": [
+      "me.noramibu.tweaks.RejectsBaritoneCancel"
+    ],
     "meteor": [
       "me.noramibu.tweaks.NoraTweaks"
     ]
@@ -30,7 +34,7 @@
   },
   "depends": {
     "java": ">=25",
-    "minecraft": "~26.2",
+    "minecraft": "${minecraft_version}",
     "fabricloader": ">=0.19.3",
     "fabric-api": "*",
     "meteor-client": "*"

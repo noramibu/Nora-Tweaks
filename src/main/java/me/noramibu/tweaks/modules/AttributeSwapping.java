@@ -312,11 +312,7 @@ public class AttributeSwapping extends Module {
         if (awaitingBack) return;
 
         if (slotIndex < 0 || slotIndex > 8) return;
-        //? if >=1.21.5 {
         if (slotIndex == mc.player.getInventory().getSelectedSlot()) return;
-        //?} else
-        /*if (slotIndex == mc.player.getInventory().selectedSlot) return;
-        */
 
         if (!InvUtils.swap(slotIndex, swapBack.get())) return;
 
@@ -360,9 +356,14 @@ public class AttributeSwapping extends Module {
         boolean isLiving = target instanceof LivingEntity;
         boolean isPlayer = target instanceof Player;
         boolean isOnFire = target != null && target.isOnFire();
-        boolean isUndead = target != null && target.typeHolder().is(EntityTypeTags.SENSITIVE_TO_SMITE);
-        boolean isArthropod = target != null && target.typeHolder().is(EntityTypeTags.SENSITIVE_TO_BANE_OF_ARTHROPODS);
-        boolean isAquatic = target != null && target.typeHolder().is(EntityTypeTags.SENSITIVE_TO_IMPALING);
+        boolean isUndead = false;
+        boolean isArthropod = false;
+        boolean isAquatic = false;
+        if (target != null) {
+            isUndead = target.typeHolder().is(EntityTypeTags.SENSITIVE_TO_SMITE);
+            isArthropod = target.typeHolder().is(EntityTypeTags.SENSITIVE_TO_BANE_OF_ARTHROPODS);
+            isAquatic = target.typeHolder().is(EntityTypeTags.SENSITIVE_TO_IMPALING);
+        }
         boolean hasFireResistance = isLiving && (((LivingEntity) target).hasEffect(MobEffects.FIRE_RESISTANCE) || hasFireProtectionArmor((LivingEntity) target));
         double armor = isLiving ? ((LivingEntity) target).getAttributeValue(Attributes.ARMOR) : 0;
         float health = isLiving ? ((LivingEntity) target).getHealth() : 0;
@@ -371,11 +372,7 @@ public class AttributeSwapping extends Module {
         double bestScore = getItemScore(currentStack, isFalling, durability, isLiving, isPlayer, isOnFire, hasFireResistance, isUndead, isArthropod, isAquatic, armor, health);
 
         for (int i = 0; i < 9; i++) {
-            //? if >=1.21.5 {
             if (i == mc.player.getInventory().getSelectedSlot()) continue;
-            //?} else
-            /*if (i == mc.player.getInventory().selectedSlot) continue;
-            */
 
             ItemStack stack = mc.player.getInventory().getItem(i);
             if (stack.isEmpty() && !durability) continue;
@@ -532,7 +529,6 @@ public class AttributeSwapping extends Module {
     }
 
     private boolean hasFireProtectionArmor(LivingEntity entity) {
-        //? if >=1.21.5 {
         for (EquipmentSlot slot : EquipmentSlotGroup.ARMOR) {
             ItemStack stack = entity.getItemBySlot(slot);
             if (stack.isEmpty()) continue;
@@ -540,16 +536,6 @@ public class AttributeSwapping extends Module {
             int fireProtection = Utils.getEnchantmentLevel(stack, Enchantments.FIRE_PROTECTION);
             if (fireProtection > 0) return true;
         }
-        //?} else {
-        /*for (EquipmentSlot slot : new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}) {
-            ItemStack stack = entity.getEquippedStack(slot);
-            if (stack.isEmpty()) continue;
-
-            int fireProtection = Utils.getEnchantmentLevel(stack, Enchantments.FIRE_PROTECTION);
-            if (fireProtection > 0) return true;
-        }
-        */
-        //?}
         return false;
     }
 

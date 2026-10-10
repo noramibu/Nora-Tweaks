@@ -14,7 +14,6 @@ import me.noramibu.tweaks.utils.Seeds;
 import me.noramibu.tweaks.utils.Seeds.Seed;
 import meteordevelopment.meteorclient.commands.Command;
 import meteordevelopment.meteorclient.utils.Utils;
-import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -28,7 +27,8 @@ public class SeedCommand extends Command {
     }
 
     @Override
-    public void build(LiteralArgumentBuilder<ClientSuggestionProvider> builder) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public void build(LiteralArgumentBuilder builder) {
         builder.executes(ctx -> {
             Seed seed = Seeds.get().getSeed();
             if (seed == null) throw NO_SEED.create();

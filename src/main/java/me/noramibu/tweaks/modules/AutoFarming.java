@@ -401,7 +401,7 @@ public class AutoFarming extends Module {
     private boolean tryPlant(BlockPos pos, Block block) {
         if (!plant.get()) return false;
         if (!mc.level.isEmptyBlock(pos.above())) return false;
-        if (!(block instanceof FarmlandBlock) && !(block instanceof SoulSandBlock)) return false;
+        if (!isFarmlandSoil(block) && !(block instanceof SoulSandBlock)) return false;
 
         FindItemResult findItemResult = null;
 
@@ -427,7 +427,7 @@ public class AutoFarming extends Module {
     }
 
     private FindItemResult findPlantableItem(Block soilBlock) {
-        if (soilBlock instanceof FarmlandBlock) {
+        if (isFarmlandSoil(soilBlock)) {
             return InvUtils.findInHotbar(stack -> {
                 Item item = stack.getItem();
                 return item != Items.NETHER_WART &&
@@ -444,6 +444,13 @@ public class AutoFarming extends Module {
         }
 
         return null;
+    }
+
+
+    private static boolean isFarmlandSoil(Block block) {
+        if (block instanceof FarmlandBlock) return true;
+        String name = block.getClass().getName();
+        return name.endsWith(".FarmBlock") || name.endsWith(".FarmlandBlock");
     }
 
     private boolean tryBonemeal(BlockPos pos, BlockState state, Block block) {
@@ -483,11 +490,7 @@ public class AutoFarming extends Module {
     }
 
     private double getPlayerDistance(BlockPos pos) {
-        //? if >=1.21.9 {
         return mc.player.getEyePosition().distanceTo(Vec3.atCenterOf(pos));
-        //?} else
-        /*return mc.player.getPos().distanceTo(Vec3d.ofCenter(pos));
-        */
     }
 
     private boolean isWaterNearby(LevelReader world, BlockPos pos) {
@@ -504,11 +507,7 @@ public class AutoFarming extends Module {
     private void cleanupReplantMap() {
         if (mc.player == null || replantMap.isEmpty()) return;
 
-        //? if >=1.21.9 {
         Vec3 playerPos = mc.player.position();
-        //?} else
-        /*Vec3d playerPos = mc.player.getPos();
-        */
 
         replantMap.entrySet().removeIf(entry ->
             playerPos.distanceTo(Vec3.atCenterOf(entry.getKey())) > REPLANT_MAX_DISTANCE

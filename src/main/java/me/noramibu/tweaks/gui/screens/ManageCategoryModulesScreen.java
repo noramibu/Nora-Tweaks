@@ -51,6 +51,9 @@ public class ManageCategoryModulesScreen extends WindowScreen {
         WButton sortButton = buttonTable.add(theme.button("Sort: " + getSortModeName(category.sortOrder))).expandX().widget();
         sortButton.action = () -> {
             category.cycleSortOrder();
+            if (category.sortOrder != me.noramibu.tweaks.category.SortOrder.WEIGHT) {
+                me.noramibu.tweaks.category.ModuleLayoutManager.clearOrder(me.noramibu.tweaks.category.ModuleLayoutManager.customKey(category.name));
+            }
             CustomCategoryManager.save();
             sortButton.set("Sort: " + getSortModeName(category.sortOrder));
         };

@@ -136,18 +136,10 @@ public class AutoDirtPath extends Module {
             .map(BlockPos::immutable)
             .filter(bp -> targetBlocks.contains(mc.level.getBlockState(bp).getBlock()))
             .filter(bp -> {
-                //? if >=1.21.9 {
                 return mc.player.position().distanceToSqr(Vec3.atCenterOf(bp)) <= rangeSq;
-                //?} else
-                /*return mc.player.getPos().squaredDistanceTo(Vec3d.ofCenter(bp)) <= rangeSq;
-                */
             })
             .sorted(Comparator.comparing(bp -> {
-                //? if >=1.21.9 {
                 return mc.player.position().distanceTo(Vec3.atCenterOf(bp));
-                //?} else
-                /*return mc.player.getPos().distanceTo(Vec3d.ofCenter(bp));
-                */
             }))
             .limit(blocksPerTick.get())
             .forEach(this::turnToPath);

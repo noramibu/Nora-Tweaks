@@ -1,94 +1,109 @@
-import org.gradle.api.file.DuplicatesStrategy
-import org.gradle.jvm.tasks.Jar
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.gradle.api.file.DuplicatesStrategy
 
 plugins {
-    id("net.fabricmc.fabric-loom") version "1.16-SNAPSHOT"
+    id("net.fabricmc.fabric-loom") version "1.17-SNAPSHOT"
     id("com.gradleup.shadow") version "9.0.0-beta12"
+    id("maven-publish")
 }
 
-val minecraftVersion = project.property("minecraft_version") as String
-val loaderVersion = project.property("loader_version") as String
-val fabricApiVersion = project.property("fabric_api_version") as String
-val meteorVersion = project.property("meteor_version") as String
-val baritoneVersion = project.property("baritone_version") as String
-val xppleCubiomesVersion = project.property("xpple_cubiomes_version") as String
-val modVersion = project.property("mod.version") as String
-val mavenGroup = project.property("maven_group") as String
+fun prop(name: String): String =
+    project.findProperty(name)?.toString()
+        ?: rootProject.findProperty(name)?.toString()
+        ?: error("Missing property: $name")
+
+val minecraftVersion = prop("minecraft_version")
+val loaderVersion = prop("loader_version")
+val fabricApiVersion = prop("fabric_api_version")
+val meteorVersion = prop("meteor_version")
+val baritoneVersion = prop("baritone_version")
+val xppleCubiomesVersion = prop("xpple_cubiomes_version")
+val modVersion = prop("mod_version")
+val mavenGroup = prop("maven_group")
+val archivesBaseName = prop("archives_base_name")
+
+version = "$modVersion-$minecraftVersion"
+group = mavenGroup
 
 base {
-    archivesName = project.property("archives_base_name") as String
-    version = "${minecraftVersion}-${modVersion}"
-    group = mavenGroup
+    archivesName.set(archivesBaseName)
 }
 
 repositories {
+    maven("https://maven.fabricmc.net/")
+    maven("https://libraries.minecraft.net/")
+    maven("https://maven.meteordev.org/releases")
+    maven("https://maven.meteordev.org/snapshots")
+    maven("https://maven.xpple.dev/maven2")
+    maven("https://jitpack.io")
+    maven("https://maven.bawnorton.com/releases")
+    flatDir { dirs(rootProject.file("libs")) }
     mavenCentral()
     mavenLocal()
-    maven("xpple") { url = uri("https://maven.xpple.dev/maven2") }
-    maven("meteor-maven") { url = uri("https://maven.meteordev.org/releases") }
-    maven("meteor-maven-snapshots") { url = uri("https://maven.meteordev.org/snapshots") }
-    maven("JitPack") { url = uri("https://jitpack.io") }
 }
 
 val shade by configurations.creating
-
 configurations.named("implementation") {
     extendsFrom(shade)
 }
 
 dependencies {
-    // Fabric
     minecraft("com.mojang:minecraft:$minecraftVersion")
     implementation("net.fabricmc:fabric-loader:$loaderVersion")
     implementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
-
-    // Meteor / Baritone
-    implementation("meteordevelopment:meteor-client:${meteorVersion}-SNAPSHOT")
+    compileOnly("meteordevelopment:meteor-client:$meteorVersion-SNAPSHOT")
     compileOnly("meteordevelopment:orbit:0.2.4")
-    compileOnly("meteordevelopment:baritone:${baritoneVersion}-SNAPSHOT") {
+    compileOnly("meteordevelopment:baritone:$baritoneVersion-SNAPSHOT") {
         isTransitive = false
     }
-
-    // Cubiomes Java bindings (FFM). Native is loaded from resources at runtime.
-    shade("dev.xpple:cubiomes:$xppleCubiomesVersion") { isTransitive = false }
+    shade("com.github.bawnorton.mixinsquared:mixinsquared-fabric:0.2.0") {
+        isTransitive = false
+    }
+    shade("dev.xpple:cubiomes:$xppleCubiomesVersion") {
+        isTransitive = false
+    }
 }
 
 tasks {
     processResources {
-        val propertyMap = mapOf(
-            "version" to project.version,
-            "mc_version" to minecraftVersion,
-        )
-
-        inputs.properties(propertyMap)
-
+        val ver = project.version.toString()
+        val mc = minecraftVersion
+        inputs.property("version", ver)
+        inputs.property("minecraft_version", mc)
         filteringCharset = "UTF-8"
-
         filesMatching("fabric.mod.json") {
-            expand(propertyMap)
+            filter { line: String ->
+                line
+                    .replace("\${version}", ver)
+                    .replace("\${minecraft_version}", mc)
+            }
         }
+    }
+
+    withType<JavaCompile>().configureEach {
+        options.encoding = "UTF-8"
+        options.release = 25
+        options.compilerArgs.add("-Xlint:deprecation")
+        options.compilerArgs.add("-Xlint:unchecked")
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_25
+        targetCompatibility = JavaVersion.VERSION_25
+        withSourcesJar()
     }
 
     val shadowJar by getting(ShadowJar::class) {
         configurations = listOf(shade)
         archiveClassifier.set("")
-        inputs.property("archivesName", project.base.archivesName.get())
-
-        from("LICENSE") {
-            rename { "${it}_${inputs.properties["archivesName"]}" }
+        from(rootProject.file("LICENSE")) {
+            rename { "${it}_$archivesBaseName" }
         }
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 
     named<Jar>("jar") {
         enabled = false
-        inputs.property("archivesName", project.base.archivesName.get())
-
-        from("LICENSE") {
-            rename { "${it}_${inputs.properties["archivesName"]}" }
-        }
-
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 
     matching { it.name == "remapJar" }.configureEach {
@@ -98,17 +113,4 @@ tasks {
     named("build") {
         dependsOn(shadowJar)
     }
-
-    java {
-        sourceCompatibility = JavaVersion.VERSION_25
-        targetCompatibility = JavaVersion.VERSION_25
-    }
-
-    withType<JavaCompile> {
-        options.encoding = "UTF-8"
-        options.release = 25
-        options.compilerArgs.add("-Xlint:deprecation")
-        options.compilerArgs.add("-Xlint:unchecked")
-    }
 }
-

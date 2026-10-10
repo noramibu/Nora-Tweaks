@@ -51,22 +51,12 @@ public class Keyword {
     }
 
     public static Keyword fromNbt(CompoundTag nbt) {
-        //? if >=1.21.5 {
         Keyword keyword = new Keyword(
             nbt.getString("name").orElse(""),
             nbt.getBoolean("caseSensitive").orElse(false),
             nbt.getBoolean("wholeWord").orElse(false),
             nbt.getBoolean("useRegex").orElse(false)
         );
-        //?} else {
-        /*Keyword keyword = new Keyword(
-            nbt.getString("name"),
-            nbt.getBoolean("caseSensitive"),
-            nbt.getBoolean("wholeWord"),
-            nbt.getBoolean("useRegex")
-        );
-        */
-        //?}
         keyword.compilePattern();
         return keyword;
     }

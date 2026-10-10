@@ -111,6 +111,11 @@ public class CustomCategoryManager {
         return configs != null && configs.stream().anyMatch(mc -> mc.moduleName.equals(module.name));
     }
 
+    public static List<ModuleConfig> getOrCreateConfigs(CustomCategory category) {
+        if (category == null) return new ArrayList<>();
+        return assignments.computeIfAbsent(category.name, k -> new ArrayList<>());
+    }
+
     public static List<Module> getModules(CustomCategory category) {
         if (category == null) return new ArrayList<>();
         List<ModuleConfig> configs = assignments.get(category.name);

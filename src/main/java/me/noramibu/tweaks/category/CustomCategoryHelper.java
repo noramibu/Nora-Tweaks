@@ -8,11 +8,9 @@ import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.utils.Cell;
 import meteordevelopment.meteorclient.gui.widgets.containers.WContainer;
 import meteordevelopment.meteorclient.gui.widgets.containers.WWindow;
-import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.Minecraft;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class CustomCategoryHelper {
@@ -50,11 +48,7 @@ public class CustomCategoryHelper {
                 if (modules.isEmpty()) {
                     w.add(theme.label("No modules.")).expandX();
                 } else {
-                    modules.sort(switch (category.sortOrder) {
-                        case WEIGHT -> Comparator.comparingInt((Module m) -> CustomCategoryManager.getModuleWeight(m, category)).thenComparing(m -> m.title);
-                        case Z_TO_A -> Comparator.comparing((Module m) -> m.title).reversed();
-                        default -> Comparator.comparing(m -> m.title);
-                    });
+                    ModuleLayoutManager.orderCustomModules(category, modules);
                     modules.forEach(m -> w.add(theme.module(m)).expandX());
                 }
 

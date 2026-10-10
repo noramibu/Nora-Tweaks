@@ -10,7 +10,6 @@ public class CustomCategory {
         this.name = name;
     }
 
-    // Required for GSON
     public CustomCategory() {}
 
     public void cycleSortOrder() {

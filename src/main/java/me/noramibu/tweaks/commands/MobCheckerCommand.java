@@ -4,7 +4,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import meteordevelopment.meteorclient.commands.Command;
-import net.minecraft.client.multiplayer.ClientSuggestionProvider;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
@@ -24,7 +24,8 @@ public class MobCheckerCommand extends Command {
 	}
 
 	@Override
-	public void build(LiteralArgumentBuilder<ClientSuggestionProvider> builder) {
+	@SuppressWarnings({"unchecked", "rawtypes"})
+    public void build(LiteralArgumentBuilder builder) {
 		builder.executes(ctx -> {
 			runCheck(DEFAULT_RANGE, null);
 			return SINGLE_SUCCESS;
@@ -59,10 +60,7 @@ public class MobCheckerCommand extends Command {
 		final int rangeSq = range * range;
 		final String filterLower = (mobTypeFilter == null || mobTypeFilter.isEmpty()) ? null : mobTypeFilter.toLowerCase();
 
-		//? if >=1.21.9 {
 		Vec3 center = mc.player.position();
-		//?} else
-		/*Vec3d center = mc.player.getPos();*/
 		AABB box = AABB.ofSize(center, range * 2.0, range * 2.0, range * 2.0);
 
 		mc.level.getEntities((Entity) null, box, entity -> true).forEach(entity -> {

@@ -16,7 +16,6 @@ import me.noramibu.tweaks.utils.Seeds.Seed;
 import meteordevelopment.meteorclient.commands.Command;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
-import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -39,7 +38,8 @@ public class LocateCommand extends Command {
     }
 
     @Override
-    public void build(LiteralArgumentBuilder<ClientSuggestionProvider> builder) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public void build(LiteralArgumentBuilder builder) {
         builder.then(literal("feature")
             .then(argument("feature", StringArgumentType.word())
                 .suggests((ctx, builder1) -> SharedSuggestionProvider.suggest(

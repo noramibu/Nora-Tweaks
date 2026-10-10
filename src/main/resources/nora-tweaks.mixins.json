@@ -11,11 +11,29 @@
   "client": [
     "MinecraftClientMixin",
     "ModulesScreenMixin",
+    "ModulesScreenDragMixin",
+    "ModulesScreenCreateCategoryMixin",
     "SingleModuleScreenMixin",
+    "WModuleDragMixin",
+    "WWidgetDragHighlightMixin",
+    "WidgetScreenDragMixin",
     "catppuccin.CatppuccinModulesScreenMixin",
-    "baritone.MineProcessMixin",
-    "baritone.MineProcessMixinApi",
-    "catpuccin.CatpuccinModulesScreenMixin"
+    "catppuccin.CatppuccinModulesScreenDragMixin",
+    "catppuccin.CatppuccinCreateCategoryMixin",
+    "catpuccin.CatpuccinModulesScreenMixin",
+    "catpuccin.CatpuccinModulesScreenDragMixin",
+    "rejects.MeteorRejectsAddonMixin",
+    "guifix.WContainerMoveMixin",
+    "guifix.WContainerHitOrderMixin",
+    "guifix.WCategoryControllerLayoutMixin",
+    "guifix.CatppuccinCategoryControllerLayoutMixin",
+    "guifix.CatppuccinHeaderReleaseMixin",
+    "guifix.WSearchWindowSizeMixin",
+    "guifix.WWindowLayoutMixin",
+    "guifix.WWindowClampMixin",
+    "guifix.WWindowTitleAccessor",
+    "guifix.WWindowDragStateAccessor",
+    "guifix.WHeaderReleaseMixin"
   ],
   "injectors": {
     "defaultRequire": 1

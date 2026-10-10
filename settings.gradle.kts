@@ -1,11 +1,13 @@
 pluginManagement {
     repositories {
-        mavenLocal()
-        mavenCentral()
+        maven("https://maven.fabricmc.net/")
         gradlePluginPortal()
-        maven {
-            name = "Fabric"
-            url = uri("https://maven.fabricmc.net/")
-        }
+        mavenCentral()
     }
 }
+
+plugins {
+    id("net.fabricmc.fabric-loom") version "1.17-SNAPSHOT" apply false
+}
+
+rootProject.name = "nora-tweaks"

@@ -174,11 +174,7 @@ public class MaceCombo extends Module {
         // Start combo on first manual attack
         if (!comboActive && mc.player.fallDistance >= 1.5) {
             // Record the mace slot that was used to start the combo
-            //? if >=1.21.5 {
             firstUsedMaceSlot = mc.player.getInventory().getSelectedSlot();
-            //?} else
-            /*firstUsedMaceSlot = mc.player.getInventory().selectedSlot;
-            */
             startCombo(livingTarget);
         }
     }
@@ -363,11 +359,7 @@ public class MaceCombo extends Module {
         // Check hotbar slots
         int windChargeSlot = getWindChargeSlot();
         if (windChargeSlot != -1) {
-            //? if >=1.21.5 {
             savedMaceSlot = mc.player.getInventory().getSelectedSlot();
-            //?} else
-            /*savedMaceSlot = mc.player.getInventory().selectedSlot;
-            */
             mc.player.getInventory().setSelectedSlot(windChargeSlot);
             isUsingWindCharge = true;
             awaitingWindChargeUse = false; // Use immediately
@@ -400,11 +392,7 @@ public class MaceCombo extends Module {
                     // Check hotbar slots
                     int windChargeSlot = getWindChargeSlot();
                     if (windChargeSlot != -1) {
-                        //? if >=1.21.5 {
                         savedMaceSlot = mc.player.getInventory().getSelectedSlot();
-                        //?} else
-                        /*savedMaceSlot = mc.player.getInventory().selectedSlot;
-                        */
                         mc.player.getInventory().setSelectedSlot(windChargeSlot);
                         isUsingWindCharge = true;
                         awaitingWindChargeUse = false; // Use immediately
@@ -509,11 +497,7 @@ public class MaceCombo extends Module {
     }
 
     private void rotateToTarget() {
-        //? if >=1.21.9 {
         Vec3 targetPos = target.position();
-        //?} else
-        /*Vec3d targetPos = target.getPos();
-        */
         Rotations.rotate(Rotations.getYaw(targetPos), Rotations.getPitch(targetPos));
     }
 
