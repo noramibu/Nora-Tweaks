@@ -17,7 +17,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.item.AxeItem;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -263,7 +264,7 @@ public class AutoLogStrip extends Module {
     }
 
     private void doStrip() {
-        FindItemResult axe = InvUtils.findInHotbar(s -> s.getItem() instanceof AxeItem);
+        FindItemResult axe = InvUtils.findInHotbar(s -> s.is(ItemTags.AXES));
         if (!axe.found()) {
             if (chatFeedback.get()) error("No axe found!");
             reset();
@@ -274,13 +275,13 @@ public class AutoLogStrip extends Module {
             InvUtils.swap(axe.slot(), true);
             mc.gameMode.useItemOn(mc.player, InteractionHand.MAIN_HAND,
                 new BlockHitResult(Vec3.atCenterOf(targetPos), Direction.UP, targetPos, false));
-            if (swingHand.get()) mc.player.swing(InteractionHand.MAIN_HAND);
+            if (swingHand.get()) mc.player.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, false);
             InvUtils.swapBack();
         });
     }
 
     private void doBreak() {
-        FindItemResult axe = InvUtils.findInHotbar(s -> s.getItem() instanceof AxeItem);
+        FindItemResult axe = InvUtils.findInHotbar(s -> s.is(ItemTags.AXES));
         if (!axe.found()) {
             if (chatFeedback.get()) error("No axe found!");
             reset();

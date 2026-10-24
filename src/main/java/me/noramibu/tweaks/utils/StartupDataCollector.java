@@ -92,17 +92,17 @@ public class StartupDataCollector extends System<StartupDataCollector> {
         try {
             String rawMinecraftVersion = FabricLoader.getInstance().getModContainer("minecraft")
                     .map(container -> container.getMetadata().getVersion().getFriendlyString())
-                    .orElse("1.21.11");
+                    .orElse("26.3");
             data.minecraftVersion = normalizeMinecraftVersion(rawMinecraftVersion);
         } catch (Exception e) {
-            data.minecraftVersion = "1.21.11";
+            data.minecraftVersion = "26.3";
         }
 
         try {
             MeteorVersionSource meteor = resolveMeteorVersionSource();
             data.meteorVersion = formatMeteorVersion(meteor, data.minecraftVersion);
         } catch (Exception e) {
-            data.meteorVersion = "meteor-client-1.21.11";
+            data.meteorVersion = "meteor-client-26.3";
         }
 
         try {
@@ -173,7 +173,7 @@ public class StartupDataCollector extends System<StartupDataCollector> {
         if (parts.size() >= 2) {
             return clamp(parts.get(0), 0, 99) + "." + clamp(parts.get(1), 0, 99);
         }
-        return "1.21.11";
+        return "26.3";
     }
 
     private static String formatMeteorVersion(MeteorVersionSource source, String minecraftVersion) {
@@ -181,7 +181,7 @@ public class StartupDataCollector extends System<StartupDataCollector> {
         String version = source.version;
 
         if (version == null || version.isBlank()) {
-            version = minecraftVersion == null || minecraftVersion.isBlank() ? "1.21.11" : minecraftVersion;
+            version = minecraftVersion == null || minecraftVersion.isBlank() ? "26.3" : minecraftVersion;
         }
 
         String value = (id + "-" + version)
@@ -191,7 +191,7 @@ public class StartupDataCollector extends System<StartupDataCollector> {
 
         if (value.startsWith("-")) value = value.substring(1);
         if (value.endsWith("-")) value = value.substring(0, value.length() - 1);
-        if (value.isEmpty()) value = "meteor-client-1.21.11";
+        if (value.isEmpty()) value = "meteor-client-26.3";
 
         return value;
     }
@@ -241,7 +241,7 @@ public class StartupDataCollector extends System<StartupDataCollector> {
             }
         }
 
-        return new MeteorVersionSource("meteor-client", "1.21.11");
+        return new MeteorVersionSource("meteor-client", "26.3");
     }
 
     private static String detectBaritoneVariant() {

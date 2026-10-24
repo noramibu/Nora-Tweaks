@@ -3,7 +3,7 @@ import org.gradle.jvm.tasks.Jar
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
-    id("net.fabricmc.fabric-loom") version "1.16-SNAPSHOT"
+    id("net.fabricmc.fabric-loom") version "1.18.2"
     id("com.gradleup.shadow") version "9.0.0-beta12"
 }
 
@@ -111,4 +111,3 @@ tasks {
         options.compilerArgs.add("-Xlint:unchecked")
     }
 }
-

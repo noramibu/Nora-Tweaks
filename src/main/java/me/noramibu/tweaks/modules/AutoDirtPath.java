@@ -9,7 +9,8 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.item.ShovelItem;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
@@ -121,7 +122,7 @@ public class AutoDirtPath extends Module {
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {
-        if (!(mc.player.getMainHandItem().getItem() instanceof ShovelItem)) {
+        if (!mc.player.getMainHandItem().is(ItemTags.SHOVELS)) {
             return;
         }
 
@@ -158,7 +159,7 @@ public class AutoDirtPath extends Module {
             mc.gameMode.useItemOn(mc.player, InteractionHand.MAIN_HAND, new BlockHitResult(
                 Vec3.atCenterOf(blockPos), Direction.UP, blockPos, false
             ));
-            mc.player.swing(InteractionHand.MAIN_HAND);
+            mc.player.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, false);
         };
 
         if (rotate.get()) {

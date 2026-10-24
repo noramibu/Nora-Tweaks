@@ -10,6 +10,7 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundAttackPacket;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Items;
@@ -451,13 +452,13 @@ public class MaceCombo extends Module {
         // Use wind charge - prioritize off-hand, then main hand
         if (mc.player.getOffhandItem().getItem() == Items.WIND_CHARGE) {
             mc.gameMode.useItem(mc.player, InteractionHand.OFF_HAND);
-            mc.player.swing(InteractionHand.OFF_HAND);
+            mc.player.swing(InteractionHand.OFF_HAND, SwingAnimation.DEFAULT, false);
             if (chatFeedback.get()) {
                 mc.player.sendSystemMessage(Component.literal("§8[§6Nora Tweaks§8] §bWind Charge used (off-hand)!"));
             }
         } else if (mc.player.getMainHandItem().getItem() == Items.WIND_CHARGE) {
             mc.gameMode.useItem(mc.player, InteractionHand.MAIN_HAND);
-            mc.player.swing(InteractionHand.MAIN_HAND);
+            mc.player.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, false);
             if (chatFeedback.get()) {
                 mc.player.sendSystemMessage(Component.literal("§8[§6Nora Tweaks§8] §bWind Charge used (main-hand)!"));
             }
@@ -520,7 +521,7 @@ public class MaceCombo extends Module {
     private void attackTarget() {
         if (mc.gameMode == null) return;
         mc.gameMode.attack(mc.player, target);
-        mc.player.swing(InteractionHand.MAIN_HAND);
+        mc.player.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, false);
         hits++;
     }
 
