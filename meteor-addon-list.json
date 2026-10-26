@@ -13,5 +13,13 @@
     "Automation"
   ],
   "discord": "https://discord.gg/rRFf5JJWhd",
-  "homepage": "https://www.meteoraddons.com"
+  "homepage": "https://www.meteoraddons.com",
+  "feature_directories": {
+    "commands": [
+      "commands"
+    ],
+    "modules": [
+      "modules"
+    ]
+  }
 }
