@@ -9,10 +9,12 @@ package me.noramibu.tweaks.utils;
 import dev.xpple.cubiomes.Cubiomes;
 import dev.xpple.cubiomes.CubiomesInit;
 import dev.xpple.cubiomes.Generator;
+import dev.xpple.cubiomes.Pos;
 import dev.xpple.cubiomes.StrongholdIter;
 import dev.xpple.cubiomes.StructureConfig;
 import me.noramibu.tweaks.utils.Seeds.Seed;
 import meteordevelopment.meteorclient.utils.player.PlayerUtils;
+import meteordevelopment.meteorclient.utils.world.Dimension;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
@@ -217,8 +219,8 @@ public class WorldGenUtils {
                 if (Cubiomes.nextStronghold(strongholdIter, generator) == 0) break;
 
                 MemorySegment pos = StrongholdIter.pos(strongholdIter);
-                int sx = dev.xpple.cubiomes.Pos.x(pos);
-                int sz = dev.xpple.cubiomes.Pos.z(pos);
+                int sx = Pos.x(pos);
+                int sz = Pos.z(pos);
                 double distanceSq = distSq(x, z, sx, sz);
                 if (distanceSq < nearestDistanceSq) {
                     nearestDistanceSq = distanceSq;
@@ -248,14 +250,14 @@ public class WorldGenUtils {
             Cubiomes.setupGenerator(generator, mcVersion, 0);
             Cubiomes.applySeed(generator, dimension, seed);
 
-            MemorySegment structurePos = dev.xpple.cubiomes.Pos.allocate(arena);
+            MemorySegment structurePos = Pos.allocate(arena);
             Coordinate found = spiral(centerRegionX, centerRegionZ, MAX_SEARCH_RADIUS_REGIONS, (regionX, regionZ) -> {
                 if (Cubiomes.getStructurePos(structureId, mcVersion, seed, regionX, regionZ, structurePos) == 0) {
                     return false;
                 }
 
-                int sx = dev.xpple.cubiomes.Pos.x(structurePos);
-                int sz = dev.xpple.cubiomes.Pos.z(structurePos);
+                int sx = Pos.x(structurePos);
+                int sz = Pos.z(structurePos);
                 if (Cubiomes.isViableStructurePos(structureId, generator, sx, sz, 0) == 0) {
                     return false;
                 }
@@ -263,7 +265,7 @@ public class WorldGenUtils {
             });
 
             if (found == null) return null;
-            return new BlockPos(dev.xpple.cubiomes.Pos.x(structurePos), 0, dev.xpple.cubiomes.Pos.z(structurePos));
+            return new BlockPos(Pos.x(structurePos), 0, Pos.z(structurePos));
         }
     }
 
@@ -324,15 +326,15 @@ public class WorldGenUtils {
         return null;
     }
 
-    private static boolean isInDimension(meteordevelopment.meteorclient.utils.world.Dimension dimension) {
+    private static boolean isInDimension(Dimension dimension) {
         return PlayerUtils.getDimension() == dimension;
     }
 
-    private static meteordevelopment.meteorclient.utils.world.Dimension getDimension(Feature feature) {
+    private static Dimension getDimension(Feature feature) {
         return switch (feature) {
-            case nether_fortress, bastion_remnant -> meteordevelopment.meteorclient.utils.world.Dimension.Nether;
-            case end_city -> meteordevelopment.meteorclient.utils.world.Dimension.End;
-            default -> meteordevelopment.meteorclient.utils.world.Dimension.Overworld;
+            case nether_fortress, bastion_remnant -> Dimension.Nether;
+            case end_city -> Dimension.End;
+            default -> Dimension.Overworld;
         };
     }
 

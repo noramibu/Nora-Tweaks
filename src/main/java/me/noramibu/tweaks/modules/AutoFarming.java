@@ -15,14 +15,15 @@ import meteordevelopment.meteorclient.utils.misc.Pool;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.meteorclient.utils.player.Rotations;
+import meteordevelopment.meteorclient.utils.player.SwingMode;
 import meteordevelopment.meteorclient.utils.world.BlockIterator;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.LevelReader;
@@ -282,7 +283,7 @@ public class AutoFarming extends Module {
         if (!mc.level.getBlockState(pos.above()).isAir()) return false;
         if (moist.get() && !isWaterNearby(mc.level, pos)) return false;
 
-        FindItemResult hoe = InvUtils.findInHotbar(stack -> stack.getItem() instanceof HoeItem);
+        FindItemResult hoe = InvUtils.findInHotbar(stack -> stack.is(ItemTags.HOES));
         if (!hoe.found()) return false;
 
         performInteraction(pos, hoe);
@@ -308,22 +309,22 @@ public class AutoFarming extends Module {
                 Rotations.rotate(Rotations.getYaw(pos), Rotations.getPitch(pos), -100, () -> {
                     mc.gameMode.useItemOn(mc.player, InteractionHand.MAIN_HAND,
                         new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false));
-                    if (swingHand.get()) mc.player.swing(InteractionHand.MAIN_HAND);
+                    if (swingHand.get()) SwingMode.Client.interactSwing(InteractionHand.MAIN_HAND);
                 });
             } else {
                 mc.gameMode.useItemOn(mc.player, InteractionHand.MAIN_HAND,
                     new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false));
-                if (swingHand.get()) mc.player.swing(InteractionHand.MAIN_HAND);
+                if (swingHand.get()) SwingMode.Client.interactSwing(InteractionHand.MAIN_HAND);
             }
         } else {
             if (rotate.get()) {
                 Rotations.rotate(Rotations.getYaw(pos), Rotations.getPitch(pos), -100, () -> {
                     mc.gameMode.continueDestroyBlock(pos, Direction.UP);
-                    if (swingHand.get()) mc.player.swing(InteractionHand.MAIN_HAND);
+                    if (swingHand.get()) SwingMode.Both.attackSwing(InteractionHand.MAIN_HAND);
                 });
             } else {
                 mc.gameMode.continueDestroyBlock(pos, Direction.UP);
-                if (swingHand.get()) mc.player.swing(InteractionHand.MAIN_HAND);
+                if (swingHand.get()) SwingMode.Both.attackSwing(InteractionHand.MAIN_HAND);
             }
         }
         actions++;
@@ -343,11 +344,11 @@ public class AutoFarming extends Module {
         if (rotate.get()) {
             Rotations.rotate(Rotations.getYaw(pos), Rotations.getPitch(pos), -100, () -> {
                 mc.gameMode.continueDestroyBlock(pos, Direction.UP);
-                if (tallCropSwingHand.get()) mc.player.swing(InteractionHand.MAIN_HAND);
+                if (tallCropSwingHand.get()) SwingMode.Both.attackSwing(InteractionHand.MAIN_HAND);
             });
         } else {
             mc.gameMode.continueDestroyBlock(pos, Direction.UP);
-            if (tallCropSwingHand.get()) mc.player.swing(InteractionHand.MAIN_HAND);
+            if (tallCropSwingHand.get()) SwingMode.Both.attackSwing(InteractionHand.MAIN_HAND);
         }
         actions++;
         return true;
@@ -466,7 +467,7 @@ public class AutoFarming extends Module {
             InvUtils.swap(item.slot(), true);
             mc.gameMode.useItemOn(mc.player, InteractionHand.MAIN_HAND,
                 new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false));
-            if (swingHand.get()) mc.player.swing(InteractionHand.MAIN_HAND);
+            if (swingHand.get()) SwingMode.Client.interactSwing(InteractionHand.MAIN_HAND);
             InvUtils.swapBack();
             mc.player.setShiftKeyDown(wasSneaking);
         };
@@ -483,11 +484,7 @@ public class AutoFarming extends Module {
     }
 
     private double getPlayerDistance(BlockPos pos) {
-        //? if >=1.21.9 {
         return mc.player.getEyePosition().distanceTo(Vec3.atCenterOf(pos));
-        //?} else
-        /*return mc.player.getPos().distanceTo(Vec3d.ofCenter(pos));
-        */
     }
 
     private boolean isWaterNearby(LevelReader world, BlockPos pos) {
@@ -504,11 +501,7 @@ public class AutoFarming extends Module {
     private void cleanupReplantMap() {
         if (mc.player == null || replantMap.isEmpty()) return;
 
-        //? if >=1.21.9 {
         Vec3 playerPos = mc.player.position();
-        //?} else
-        /*Vec3d playerPos = mc.player.getPos();
-        */
 
         replantMap.entrySet().removeIf(entry ->
             playerPos.distanceTo(Vec3.atCenterOf(entry.getKey())) > REPLANT_MAX_DISTANCE

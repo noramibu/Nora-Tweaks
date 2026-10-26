@@ -12,6 +12,7 @@ import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -135,7 +136,7 @@ public class DeepslateESP extends Module {
 
     private Boolean isNonNaturalDeepslate(BlockState state) {
         if (!state.hasProperty(BlockStateProperties.AXIS)) return null;
-        return state.getValue(BlockStateProperties.AXIS) != net.minecraft.core.Direction.Axis.Y;
+        return state.getValue(BlockStateProperties.AXIS) != Direction.Axis.Y;
     }
 
     @EventHandler

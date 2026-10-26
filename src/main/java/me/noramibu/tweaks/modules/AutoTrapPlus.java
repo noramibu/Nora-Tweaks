@@ -17,6 +17,7 @@ import meteordevelopment.meteorclient.utils.player.PlayerUtils;
 import meteordevelopment.meteorclient.utils.world.BlockUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.Block;
@@ -205,16 +206,16 @@ public class AutoTrapPlus extends Module {
         if (!mc.level.getBlockState(placePos).canBeReplaced()) return false;
 
         // Build candidate directions with outward first, then others
-        net.minecraft.core.Direction outward = net.minecraft.core.Direction.NORTH;
+        Direction outward = Direction.NORTH;
         if (target != null) {
             BlockPos center = BlockPos.containing(target.getX(), Math.floor(target.getBoundingBox().minY), target.getZ());
             int dx = placePos.getX() - center.getX();
             int dz = placePos.getZ() - center.getZ();
-            if (Math.abs(dx) >= Math.abs(dz)) outward = dx > 0 ? net.minecraft.core.Direction.EAST : net.minecraft.core.Direction.WEST;
-            else outward = dz > 0 ? net.minecraft.core.Direction.SOUTH : net.minecraft.core.Direction.NORTH;
+            if (Math.abs(dx) >= Math.abs(dz)) outward = dx > 0 ? Direction.EAST : Direction.WEST;
+            else outward = dz > 0 ? Direction.SOUTH : Direction.NORTH;
         }
 
-        net.minecraft.core.Direction[] dirs = new net.minecraft.core.Direction[] {
+        Direction[] dirs = new Direction[] {
             outward,
             outward.getClockWise(),
             outward.getCounterClockWise(),
@@ -222,7 +223,7 @@ public class AutoTrapPlus extends Module {
         };
 
         // Optimize supports: place exactly one side support adjacent to target, preferring outward first
-        for (net.minecraft.core.Direction d : dirs) {
+        for (Direction d : dirs) {
             BlockPos s = placePos.relative(d);
             // don't block the feet gap column
             if (gapFeetPos != null && s.below().equals(gapFeetPos)) continue;
@@ -323,11 +324,7 @@ public class AutoTrapPlus extends Module {
             case West -> -1;
             case South, North -> 0;
             case TowardPlayer -> {
-                //? if >=1.21.9 {
                 Vec3 toPlayer = mc.player.position().subtract(t.position());
-                //?} else
-                /*Vec3d toPlayer = mc.player.getPos().subtract(t.getPos());
-                */
                 if (Math.abs(toPlayer.x) >= Math.abs(toPlayer.z)) yield toPlayer.x > 0 ? 1 : -1;
                 else yield 0;
             }
@@ -341,11 +338,7 @@ public class AutoTrapPlus extends Module {
             case North -> -1;
             case East, West -> 0;
             case TowardPlayer -> {
-                //? if >=1.21.9 {
                 Vec3 toPlayer = mc.player.position().subtract(t.position());
-                //?} else
-                /*Vec3d toPlayer = mc.player.getPos().subtract(t.getPos());
-                */
                 if (Math.abs(toPlayer.z) > Math.abs(toPlayer.x)) yield toPlayer.z > 0 ? 1 : -1;
                 else yield 0;
             }

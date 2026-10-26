@@ -94,11 +94,7 @@ public class LegitMaceKill extends Module {
         if (packetDisable.get() && (targetEntity.isBlocking() || targetEntity.isInvulnerable() || targetEntity.hasInfiniteMaterials()))
             return;
 
-        //? if >=1.21.9 {
         previouspos = mc.player.position();
-        //?} else
-        /*previouspos = mc.player.getPos();
-        */
 
         // Don't activate if fall distance is below minimum height threshold
         if (mc.player.fallDistance < minFallHeight.get()) return;

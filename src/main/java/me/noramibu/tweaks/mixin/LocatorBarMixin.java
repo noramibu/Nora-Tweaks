@@ -1,4 +1,3 @@
-//? if >=1.21.7 {
 package me.noramibu.tweaks.mixin;
 
 import me.noramibu.tweaks.modules.BetterLocator;
@@ -106,11 +105,7 @@ public abstract class LocatorBarMixin {
     private void renderMeteorWaypoints(GuiGraphicsExtractor context, int centerX, int centerY) {
         if (!module.displayWaypoints.get()) return;
 
-        //? if >=1.21.11 {
         Vec3 cameraPos = minecraft.gameRenderer.mainCamera().position();
-        //?} else
-        /*Vec3d cameraPos = client.gameRenderer.getCamera().getPos();
-        */
         float playerYaw = Mth.wrapDegrees(minecraft.gameRenderer.mainCamera().yRot());
         boolean showData = (module.displayWaypointName.get() || module.displayWaypointDistance.get()) 
             && (!module.displayWaypointOnlyOnTab.get() || minecraft.options.keyPlayerList.isDown());
@@ -188,16 +183,9 @@ public abstract class LocatorBarMixin {
 
         if (module.displayHeads.get()) {
             float drawX = x - (size - 9) / 2;
-            //? if >=1.21.9 {
             Identifier skin = entry.getSkin().body().texturePath();
             context.blit(RenderPipelines.GUI_TEXTURED, skin, (int) drawX, (int) drawY, 8.0f, 8.0f, (int) size, (int) size, 8, 8, 64, 64);
             context.blit(RenderPipelines.GUI_TEXTURED, skin, (int) drawX, (int) drawY, 40.0f, 8.0f, (int) size, (int) size, 8, 8, 64, 64);
-            //?} else {
-            /*Identifier skin = entry.getSkinTextures().texture();
-            context.drawTexture(RenderPipelines.GUI_TEXTURED, skin, (int) drawX, (int) drawY, 8.0f, 8.0f, (int) size, (int) size, 8, 8, 64, 64);
-            context.drawTexture(RenderPipelines.GUI_TEXTURED, skin, (int) drawX, (int) drawY, 40.0f, 8.0f, (int) size, (int) size, 8, 8, 64, 64);
-            */
-            //?}
         }
 
         if (module.displayPlayerData.get() && (!module.displayPlayerOnlyOnTab.get() || minecraft.options.keyPlayerList.isDown())) {
@@ -215,11 +203,7 @@ public abstract class LocatorBarMixin {
             String text = "";
             if (module.displayPlayerName.get()) {
                 Component name = entry.getTabListDisplayName();
-                //? if >=1.21.9 {
                 text = (name != null ? name : Component.nullToEmpty(entry.getProfile().name())).getString();
-                //?} else
-                /*text = (name != null ? name : Text.of(entry.getProfile().getName())).getString();
-                */
                 if (module.displayPlayerDistance.get()) text += " (" + distanceText + ")";
             } else {
                 text = distanceText;
@@ -255,11 +239,3 @@ public abstract class LocatorBarMixin {
         context.pose().popMatrix();
     }
 }
-//?} else {
-/*package me.noramibu.tweaks.mixin;
-
-// Stub class for versions before 1.21.7 where LocatorBar doesn't exist.
-// The MixinPlugin will skip applying this mixin.
-public class LocatorBarMixin {}
-*/
-//?}

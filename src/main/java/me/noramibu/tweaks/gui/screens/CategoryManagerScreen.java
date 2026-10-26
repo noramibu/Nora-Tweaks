@@ -9,6 +9,7 @@ import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.input.WTextBox;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
+import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.Minecraft;
 
@@ -65,14 +66,14 @@ public class CategoryManagerScreen extends WindowScreen {
 
             WButton activateButton = categoriesTable.add(theme.button("Activate All")).widget();
             activateButton.action = () -> {
-                for (meteordevelopment.meteorclient.systems.modules.Module module : CustomCategoryManager.getModules(category)) {
+                for (Module module : CustomCategoryManager.getModules(category)) {
                     if (!module.isActive()) module.toggle();
                 }
             };
 
             WButton deactivateButton = categoriesTable.add(theme.button("Deactivate All")).widget();
             deactivateButton.action = () -> {
-                for (meteordevelopment.meteorclient.systems.modules.Module module : CustomCategoryManager.getModules(category)) {
+                for (Module module : CustomCategoryManager.getModules(category)) {
                     if (module.isActive()) module.toggle();
                 }
             };

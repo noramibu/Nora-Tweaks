@@ -5,9 +5,11 @@ import meteordevelopment.meteorclient.events.render.Render2DEvent;
 import meteordevelopment.meteorclient.events.entity.EntityAddedEvent;
 import meteordevelopment.meteorclient.events.entity.EntityRemovedEvent;
 import meteordevelopment.meteorclient.renderer.Renderer2D;
+import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.renderer.text.TextRenderer;
 import meteordevelopment.meteorclient.settings.BoolSetting;
+import meteordevelopment.meteorclient.settings.ColorSetting;
 import meteordevelopment.meteorclient.settings.DoubleSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
@@ -26,7 +28,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3d;
-//? if >=1.21.11 {
 import meteordevelopment.meteorclient.utils.entity.simulator.ProjectileEntitySimulator;
 import meteordevelopment.meteorclient.utils.entity.simulator.SimulationStep;
 import java.util.HashMap;
@@ -37,7 +38,7 @@ import java.util.UUID;
 
 public class PearlChecker extends Module {
     private static final Color BACKGROUND = new Color(0, 0, 0, 90);
-    private final Setting<SettingColor> textColor = settings.getDefaultGroup().add(new meteordevelopment.meteorclient.settings.ColorSetting.Builder()
+    private final Setting<SettingColor> textColor = settings.getDefaultGroup().add(new ColorSetting.Builder()
         .name("text-color")
         .description("Text color for the nametag.")
         .defaultValue(new SettingColor(255, 255, 255))
@@ -104,7 +105,7 @@ public class PearlChecker extends Module {
         .build()
     );
 
-    private final Setting<SettingColor> predictColor = sgPredict.add(new meteordevelopment.meteorclient.settings.ColorSetting.Builder()
+    private final Setting<SettingColor> predictColor = sgPredict.add(new ColorSetting.Builder()
         .name("marker-color")
         .description("Color of the landing marker.")
         .defaultValue(new SettingColor(0, 200, 255, 180))
@@ -150,11 +151,7 @@ public class PearlChecker extends Module {
             if (ignoreSelf.get() && owner == mc.player) continue;
 
             String label = null;
-            //? if >=1.21.9 {
             if (owner instanceof Player p) label = p.getGameProfile().name();
-            //?} else
-            /*if (owner instanceof PlayerEntity p) label = p.getGameProfile().getName();
-            */
             if (label == null && owner != null) label = owner.getName().getString();
             if (label == null) label = pearlOwnerCache.get(pearl.getId());
 
@@ -162,11 +159,7 @@ public class PearlChecker extends Module {
                 continue;
             }
 
-            //? if >=1.21.9 {
             if (owner instanceof Player pset) pearlOwnerCache.put(pearl.getId(), pset.getGameProfile().name());
-            //?} else
-            /*if (owner instanceof PlayerEntity pset) pearlOwnerCache.put(pearl.getId(), pset.getGameProfile().getName());
-            */
 
             Utils.set(pos, pearl, event.tickDelta);
             pos.add(0, pearl.getBbHeight() + 0.25, 0);
@@ -182,11 +175,7 @@ public class PearlChecker extends Module {
 
             Renderer2D.COLOR.begin();
             Renderer2D.COLOR.quad(x - 1, y - 1, w + 2, text.getHeight() + 2, BACKGROUND);
-            //? if >=1.21.5 {
             Renderer2D.COLOR.render();
-            //?} else
-            /*Renderer2D.COLOR.render(event.drawContext.getMatrices());
-            */
 
             text.render(label, x, y, new Color(textColor.get()));
 
@@ -200,22 +189,14 @@ public class PearlChecker extends Module {
         if (!isActive() || mc.level == null) return;
         if (!(event.entity instanceof ThrownEnderpearl pearl)) return;
 
-        //? if >=1.21.9 {
         pearlStartPos.putIfAbsent(pearl.getUUID(), pearl.position());
-        //?} else
-        /*pearlStartPos.putIfAbsent(pearl.getUuid(), pearl.getPos());
-        */
 
         Entity owner = pearl.getOwner();
         if (!(owner instanceof Player player)) return;
         if (notifyIgnoreSelf.get() && player == mc.player) return;
 
         if (notify.get() && !announcedThrown.contains(pearl.getUUID())) {
-            //? if >=1.21.9 {
             String name = player.getGameProfile().name();
-            //?} else
-            /*String name = player.getGameProfile().getName();
-            */
             ChatUtils.info("(highlight)%s(default) threw a pearl at (highlight)%d, %d, %d(default) ~%.1fm away from you.",
                 name,
                 pearl.blockPosition().getX(), pearl.blockPosition().getY(), pearl.blockPosition().getZ(),
@@ -232,11 +213,7 @@ public class PearlChecker extends Module {
         if (isActive() && notifyLand.get() && announcedThrown.contains(pearl.getUUID())) {
             Entity owner = pearl.getOwner();
             String ownerName = null;
-            //? if >=1.21.9 {
             if (owner instanceof Player p) ownerName = p.getGameProfile().name();
-            //?} else
-            /*if (owner instanceof PlayerEntity p) ownerName = p.getGameProfile().getName();
-            */
             else if (owner != null) ownerName = owner.getName().getString();
             else ownerName = pearlOwnerCache.get(pearl.getId());
 
@@ -246,11 +223,7 @@ public class PearlChecker extends Module {
                 double fromDist = PlayerUtils.distanceTo(pearl);
                 Vec3 start = pearlStartPos.get(pearl.getUUID());
                 if (start != null) {
-                    //? if >=1.21.9 {
                     double travelled = start.distanceTo(pearl.position());
-                    //?} else
-                    /*double travelled = start.distanceTo(pearl.getPos());
-                    */
                     ChatUtils.info("(highlight)%s's(default) pearl landed at (highlight)%d, %d, %d(default) ~%.1fm away, travelled (highlight)%.1fm(default).",
                         ownerName,
                         pearl.blockPosition().getX(), pearl.blockPosition().getY(), pearl.blockPosition().getZ(),
@@ -279,7 +252,6 @@ public class PearlChecker extends Module {
         for (Entity e : mc.level.entitiesForRendering()) {
             if (!(e instanceof ThrownEnderpearl pearl)) continue;
 
-            //? if >=1.21.11 {
             if (!simulator.set(pearl)) continue;
 
             HitResult hit = null;
@@ -291,15 +263,6 @@ public class PearlChecker extends Module {
                     break;
                 }
             }
-            //?} else
-            /*if (!simulator.set(pearl, false)) continue;
-
-            HitResult hit = null;
-            for (int i = 0; i < 400; i++) {
-                hit = simulator.tick();
-                if (hit != null) break;
-            }
-            */
 
             if (hit == null) continue;
 
@@ -310,16 +273,12 @@ public class PearlChecker extends Module {
             double s = markerSize.get();
             AABB box = new AABB(x - s, y - s, z - s, x + s, y + s, z + s);
 
-            event.renderer.box(box, new Color(color.r, color.g, color.b, Math.max(25, color.a / 4)), color, meteordevelopment.meteorclient.renderer.ShapeMode.Both, 0);
+            event.renderer.box(box, new Color(color.r, color.g, color.b, Math.max(25, color.a / 4)), color, ShapeMode.Both, 0);
 
             if (notifyPredict.get() && announcedThrown.contains(pearl.getUUID()) && !predictedAnnounced.contains(pearl.getUUID())) {
                 Entity owner = pearl.getOwner();
                 String ownerName = null;
-                //? if >=1.21.9 {
             if (owner instanceof Player p) ownerName = p.getGameProfile().name();
-            //?} else
-            /*if (owner instanceof PlayerEntity p) ownerName = p.getGameProfile().getName();
-            */
                 else if (owner != null) ownerName = owner.getName().getString();
                 else ownerName = pearlOwnerCache.get(pearl.getId());
 

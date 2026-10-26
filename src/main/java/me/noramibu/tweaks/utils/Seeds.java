@@ -28,7 +28,7 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class Seeds extends System<Seeds> {
     private static final Seeds INSTANCE = new Seeds();
-    private static final String DEFAULT_CUBIOMES_VERSION = "MC_26_2";
+    private static final String DEFAULT_CUBIOMES_VERSION = "MC_26_3";
 
     public final HashMap<String, Seed> seeds = new HashMap<>();
 
@@ -101,13 +101,7 @@ public class Seeds extends System<Seeds> {
     @Override
     public Seeds fromTag(CompoundTag tag) {
         for (String key : tag.keySet()) {
-            //? if >=1.21.5 {
             tag.getCompound(key).ifPresent(nbt -> seeds.put(key, Seed.fromTag(nbt)));
-            //?} else {
-            /*NbtCompound nbt = tag.getCompound(key);
-            if (nbt != null) seeds.put(key, Seed.fromTag(nbt));
-            */
-            //?}
         }
         return this;
     }
@@ -141,14 +135,8 @@ public class Seeds extends System<Seeds> {
         }
 
         public static Seed fromTag(CompoundTag tag) {
-            //? if >=1.21.5 {
             long storedSeed = tag.getLong("seed").orElse(0L);
             String versionName = tag.getString("version").orElse("");
-            //?} else {
-            /*long storedSeed = tag.getLong("seed");
-            String versionName = tag.getString("version");
-            */
-            //?}
             String storedVersion = resolveStoredVersion(versionName);
             return new Seed(storedSeed, storedVersion);
         }
@@ -161,16 +149,9 @@ public class Seeds extends System<Seeds> {
                 version
             ));
 
-            //? if >=1.21.5 {
             text.setStyle(text.getStyle()
                 .withClickEvent(new ClickEvent.CopyToClipboard(Long.toString(seed)))
                 .withHoverEvent(new HoverEvent.ShowText(Component.literal("Copy to clipboard"))));
-            //?} else {
-            /*text.setStyle(text.getStyle()
-                .withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, Long.toString(seed)))
-                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Copy to clipboard"))));
-            */
-            //?}
 
             return text;
         }
@@ -225,7 +206,7 @@ public class Seeds extends System<Seeds> {
         try {
             return (int) Cubiomes.class.getMethod(resolved).invoke(null);
         } catch (ReflectiveOperationException ignored) {
-            return Cubiomes.MC_26_2();
+            return Cubiomes.MC_26_3();
         }
     }
 

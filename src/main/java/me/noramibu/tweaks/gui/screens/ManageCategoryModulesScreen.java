@@ -2,6 +2,7 @@ package me.noramibu.tweaks.gui.screens;
 
 import me.noramibu.tweaks.category.CustomCategory;
 import me.noramibu.tweaks.category.CustomCategoryManager;
+import me.noramibu.tweaks.category.SortOrder;
 import me.noramibu.tweaks.events.CustomCategoriesChangedEvent;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.gui.GuiTheme;
@@ -107,7 +108,7 @@ public class ManageCategoryModulesScreen extends WindowScreen {
         CustomCategoryManager.unassignAll(getFilteredModules(), category);
     }
 
-    private String getSortModeName(me.noramibu.tweaks.category.SortOrder order) {
+    private String getSortModeName(SortOrder order) {
         if (order == null) return "A-Z";
         switch (order) {
             case A_TO_Z: return "A-Z";

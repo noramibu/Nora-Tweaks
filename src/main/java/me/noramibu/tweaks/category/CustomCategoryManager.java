@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -118,7 +119,7 @@ public class CustomCategoryManager {
 
         return configs.stream()
             .map(mc -> Modules.get().get(mc.moduleName))
-            .filter(java.util.Objects::nonNull)
+            .filter(Objects::nonNull)
             .collect(Collectors.toList());
     }
 

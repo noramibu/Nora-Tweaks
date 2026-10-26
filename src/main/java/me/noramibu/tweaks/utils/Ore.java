@@ -28,8 +28,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.FeatureSorter;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.feature.AbstractOreFeature;
+import net.minecraft.world.level.levelgen.feature.ScatteredOreFeature;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.placement.CountPlacement;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
@@ -84,21 +84,20 @@ public class Ore {
             }
         }
 
-        FeatureConfiguration featureConfig = feature.feature().value().config();
-        if (featureConfig instanceof OreConfiguration oreFeatureConfig) {
-            this.discardOnAirChance = oreFeatureConfig.discardChanceOnAirExposure;
-            this.size = oreFeatureConfig.size;
+        if (feature.feature().value() instanceof AbstractOreFeature oreFeature) {
+            this.discardOnAirChance = oreFeature.discardChanceOnAirExposure();
+            this.size = oreFeature.size();
         } else {
-            throw new IllegalStateException("Config for " + feature + " is not an OreFeatureConfig");
+            throw new IllegalStateException("Feature for " + feature + " is not an AbstractOreFeature");
         }
 
-        if (feature.feature().value().feature() instanceof net.minecraft.world.level.levelgen.feature.ScatteredOreFeature) {
+        if (feature.feature().value() instanceof ScatteredOreFeature) {
             this.scattered = true;
         }
     }
 
     public static Map<ResourceKey<Biome>, List<Ore>> getRegistry(Dimension dimension) {
-        HolderLookup.Provider lookup = VanillaRegistries.createLookup();
+        HolderLookup.Provider lookup = VanillaRegistries.createWorldLookup();
         HolderLookup.RegistryLookup<PlacedFeature> features = lookup.lookupOrThrow(Registries.PLACED_FEATURE);
         var dimensionMap = lookup.lookupOrThrow(Registries.WORLD_PRESET).getOrThrow(WorldPresets.NORMAL).value().createWorldDimensions().dimensions();
 

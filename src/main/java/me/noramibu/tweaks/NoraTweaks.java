@@ -15,9 +15,7 @@ import me.noramibu.tweaks.modules.AutoTrapPlus;
 import me.noramibu.tweaks.modules.DeepslateESP;
 import me.noramibu.tweaks.modules.OreSim;
 import me.noramibu.tweaks.modules.PearlChecker;
-//? if >=1.21.7
 import me.noramibu.tweaks.modules.BetterLocator;
-import me.noramibu.tweaks.modules.AttributeSwapping;
 
 import com.mojang.logging.LogUtils;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -34,6 +32,7 @@ import me.noramibu.tweaks.commands.SeedCommand;
 import me.noramibu.tweaks.commands.HostInfoCommand;
 import me.noramibu.tweaks.utils.Seeds;
 import me.noramibu.tweaks.utils.StartupDataCollector;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class NoraTweaks extends MeteorAddon {
     public static final Logger LOG = LogUtils.getLogger();
@@ -61,19 +60,11 @@ public class NoraTweaks extends MeteorAddon {
         Modules.get().add(new PearlChecker());
 
         // Conditionally registering those modules that may exist in Meteor Client because PRs
-        if (!isMeteorModulePresent("attribute-swap")) {
-            Modules.get().add(new AttributeSwapping());
-        } else {
-            LOG.info("Meteor Client already has attribute-swap module, skipping AttributeSwapping.");
-        }
-
-        //? if >=1.21.7 {
         if (!isMeteorModulePresent("better-locator")) {
             Modules.get().add(new BetterLocator());
         } else {
             LOG.info("Meteor Client already has better-locator module, skipping BetterLocator.");
         }
-        //?}
 
         Modules.get().add(new OreSim());
 
@@ -94,7 +85,7 @@ public class NoraTweaks extends MeteorAddon {
     
     private void checkMeteorRejectsVersion() {
         try {
-            var rejectsMod = net.fabricmc.loader.api.FabricLoader.getInstance()
+            var rejectsMod = FabricLoader.getInstance()
                 .getModContainer("meteor-rejects")
                 .orElse(null);
             

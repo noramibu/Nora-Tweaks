@@ -5,11 +5,12 @@ import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.player.Rotations;
+import meteordevelopment.meteorclient.utils.player.SwingMode;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
@@ -103,7 +104,7 @@ public class AutoFarmLand extends Module {
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {
-        if (!(mc.player.getMainHandItem().getItem() instanceof HoeItem)) {
+        if (!mc.player.getMainHandItem().is(ItemTags.HOES)) {
             return;
         }
 
@@ -118,18 +119,10 @@ public class AutoFarmLand extends Module {
             .map(BlockPos::immutable)
             .filter(bp -> targetBlocks.contains(mc.level.getBlockState(bp).getBlock()))
             .filter(bp -> {
-                //? if >=1.21.9 {
                 return mc.player.position().distanceToSqr(Vec3.atCenterOf(bp)) <= rangeSq;
-                //?} else
-                /*return mc.player.getPos().squaredDistanceTo(Vec3d.ofCenter(bp)) <= rangeSq;
-                */
             })
             .sorted(Comparator.comparing(bp -> {
-                //? if >=1.21.9 {
                 return mc.player.position().distanceTo(Vec3.atCenterOf(bp));
-                //?} else
-                /*return mc.player.getPos().distanceTo(Vec3d.ofCenter(bp));
-                */
             }))
             .limit(blocksPerTick.get())
             .forEach(this::turnToFarmland);
@@ -140,7 +133,7 @@ public class AutoFarmLand extends Module {
             mc.gameMode.useItemOn(mc.player, InteractionHand.MAIN_HAND, new BlockHitResult(
                 Vec3.atCenterOf(blockPos), Direction.UP, blockPos, false
             ));
-            mc.player.swing(InteractionHand.MAIN_HAND);
+            SwingMode.Client.interactSwing(InteractionHand.MAIN_HAND);
         };
 
         if (rotate.get()) {
